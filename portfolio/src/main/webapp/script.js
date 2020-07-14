@@ -14,7 +14,12 @@
 
 function loadCV() {
   const CVContainer = document.getElementById('cv-container');
-  CVContainer.innerText = "No CV yet :(";
+  CVContainer.innerText = "Opening...";
+}
+
+function sendForm(id) {
+  const formContainer = document.getElementById(id);
+  formContainer.innerText = "Form was sended!";
 }
 
 /**

@@ -17,8 +17,7 @@ body {
     background-repeat: no-repeat;
     background-position: left;
 
-    display: flex;
-    flex-direction: column;
+    position: relative;
 
     font-family: 'Poppins', sans-serif;
     font-style: normal;
@@ -27,10 +26,11 @@ body {
     color: white;
 }
 
-#content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.content {
+    position: absolute;
+    right: 0;
+    top: 20%;
+
     text-align: right;
 
     margin-right: 3rem;
@@ -40,25 +40,29 @@ body {
     color: #a31414;
     font-size: 5rem;
     font-weight: 300;
-    margin-top: 10rem;
     margin-bottom: 1rem;
 }
 
 #feature {
     font-size: 6.3rem;
     font-weight: 700;
-    margin-bottom: -1rem;
+    line-height: 1; 
+}
+
+#description {
+    margin-bottom: 3rem;
 }
 
 header {
-    display: flex;
-    justify-content: flex-end;
+    position: absolute;
+    right: 0;
+
     margin-top: 1rem;
     margin-right: 3rem;
 }
 
 button {
-    margin-top: 4rem;
+    margin-top: 1rem;
     padding: 1rem 6rem;
     font-family : inherit;
     font-size: 3rem;
@@ -88,17 +92,51 @@ button:focus {
 a {
     color: white;
     font-size: 2rem;
-    transition-duration: 0.4s;
 }
 
 a:hover {
-    color: #a31414;
+    color: #a0a0a0;
 }
 
 a:active {
-    color: #851111;
+    color: #a31414;
 }
 
 a:focus {
     outline: none;
+}
+
+ul {
+    list-style-type:none;
+}
+
+#contacts {
+    margin-bottom: 1em;
+}
+
+textarea {
+  height: 6rem;
+  min-height: 3rem;
+  max-height: 20rem;
+  resize: vertical;
+
+  border: 2px solid #a0a0a0;
+  border-radius: 5px;
+
+  font-family: inherit;
+  font-size: 2rem;
+  align-self: stretch;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form#contact, form#cv {
+    align-items: flex-end;
 }
