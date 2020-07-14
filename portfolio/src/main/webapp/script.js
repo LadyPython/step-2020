@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function loadCV() {
+  const CVContainer = document.getElementById('cv-container');
+  CVContainer.innerText = "No CV yet :(";
+}
+
 /**
  * Adds a random greeting to the page.
  */

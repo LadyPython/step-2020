@@ -1,9 +1,104 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+html,
+body {
+    width: 100%;
+    height: 100%;
 }
 
-#greeting-container {
-  margin-top: 20px;
+html * {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url('/images/me.png');
+    background-color: #101010;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: left;
+
+    display: flex;
+    flex-direction: column;
+
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-size: 3rem;
+    font-weight: 200;
+    color: white;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+
+    margin-right: 3rem;
+}
+
+#ladypython {
+    color: #a31414;
+    font-size: 5rem;
+    font-weight: 300;
+    margin-top: 10rem;
+    margin-bottom: 1rem;
+}
+
+#feature {
+    font-size: 6.3rem;
+    font-weight: 700;
+    margin-bottom: -1rem;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    margin-right: 3rem;
+}
+
+button {
+    margin-top: 4rem;
+    padding: 1rem 6rem;
+    font-family : inherit;
+    font-size: 3rem;
+    font-weight: 300;
+    color: white;
+
+    background-color: #242424;
+    border: 2px solid white;
+    border-radius: 15px;
+
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    background-color: #101010;
+}
+
+button:active {
+    background-color: white;
+    color: black;
+}
+
+button:focus {
+    outline: none;
+}
+
+a {
+    color: white;
+    font-size: 2rem;
+    transition-duration: 0.4s;
+}
+
+a:hover {
+    color: #a31414;
+}
+
+a:active {
+    color: #851111;
+}
+
+a:focus {
+    outline: none;
 }
