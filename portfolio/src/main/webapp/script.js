@@ -13,6 +13,16 @@
 // limitations under the License.
 
 /**
+ * Adds a number of fetches to the page.
+ */
+
+function getData() {
+  fetch('/data').then(response => response.text()).then((numberFetches) => {
+    document.getElementById('data-container').innerText = "Hello LadyPython for the " + numberFetches + " time!";
+  });
+}
+
+/**
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
