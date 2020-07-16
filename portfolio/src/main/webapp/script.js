@@ -12,14 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function getChat() {
+  fetch('/send-message').then(response => response.json()).then((data) => {
+    // Build the list of history entries.
+    const historyEl = document.getElementById('history');
+    data.chat.history.forEach((message) => {
+      historyEl.appendChild(createListElement(message.name, "name"));
+      historyEl.appendChild(createListElement(message.text, "text"));
+    });
+
+    document.getElementById('warn-container').innerText = data.warning;
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text, liClass) {
+  const liElement = document.createElement('li');
+  liElement.setAttribute("class", liClass);
+  liElement.innerText = text
+  return liElement;
+}
+
+
 /**
  * Adds a number of fetches to the page.
  */
 
 function getData() {
-  fetch('/data').then(response => response.text()).then((numberFetches) => {
-    document.getElementById('data-container').innerText = "Hello LadyPython for the " + numberFetches + " time!";
+  fetch('/data').then(response => response.json()).then((comment) => {
+    document.getElementById('data-container').innerText = comment;
   });
+}
+
+/**
+ * Adds a random placeholder.
+ */
+function getRandomPlaceholder(elementName) {
+  const placeholders = ['I love cheesecake jelly-o sweet.', 'I love gingerbread bear claw marshmallow toffee cookie donut marzipan jelly-o.', 'Cupcake jujubes donut croissant I love.'];
+
+  // Pick a random placeholder.
+  const placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+
+  // Add it to the page.
+  document.getElementsByName(elementName)[0].placeholder = placeholder;
 }
 
 /**
