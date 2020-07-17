@@ -12,6 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function loadCV() {
+  const CVContainer = document.getElementById('cv-container');
+  CVContainer.innerText = "Opening...";
+}
+
+function sendForm(id) {
+  const formContainer = document.getElementById(id);
+  formContainer.innerText = "Form was sended!";
+}
+
 /**
  * Adds a number of fetches to the page.
  */
