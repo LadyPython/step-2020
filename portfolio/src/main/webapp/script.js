@@ -17,6 +17,7 @@ function getChat() {
     // Build the list of history entries.
     const historyEl = document.getElementById('history');
     data.chat.history.forEach((message) => {
+      historyEl.appendChild(createListElement(message.timestamp, "timestamp"));
       historyEl.appendChild(createListElement(message.name, "name"));
       historyEl.appendChild(createListElement(message.text, "text"));
     });

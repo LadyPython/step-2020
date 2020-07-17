@@ -52,14 +52,14 @@ public final class ChatServlet extends HttpServlet {
     Message message = getMessage(request);
 
     warning = "";
-    if (message.nameIsEmpty()) {
+    if (!message.hasName()) {
       warning = "Please choose name other than an anonym.\n";
     }
-    if (message.textIsEmpty()) {
+    if (!message.hasText()) {
       warning += "Please write a message.\n";
     }
 
-    if (warning.length() != 0) {
+    if (!warning.isEmpty()) {
       response.sendRedirect("/chat.html");
       return;
     }
@@ -74,7 +74,7 @@ public final class ChatServlet extends HttpServlet {
     return new Message(processName(request.getParameter("name")), processText(request.getParameter("text")));
   }
 
-  /** Returns the name entered by the person, or "anonym" if the choice was empty. */
+  /** Returns the name entered by the person, or "anonym" if the choice was empty. Return null if chosen name was anonym. */
   private String processName(String name) {
     // If the input is empty, name -> anonym
     if (name.length() == 0) {
@@ -84,17 +84,17 @@ public final class ChatServlet extends HttpServlet {
     // If the input is anonym, choose another name
     if (name.equalsIgnoreCase(ANONYM)) {
       System.err.println("Choosen name is " + ANONYM);
-      return "";
+      return null;
     }
     return name;
   }
 
-  /** Returns the text entered by the person. */
+  /** Returns the text entered by the person. Return null if text is empty. */
   private String processText(String text) {
     // If the input is empty
     if (text.length() == 0) {
       System.err.println("Empty message");
-      return "";
+      return null;
     }
     return text;
   }

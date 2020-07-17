@@ -8,6 +8,10 @@
   margin-top: 20px;
 }
 
+li.timestamp {
+    background-color: #a0a0a0;
+}
+
 li.name {
     background-color: #a31414;
 }

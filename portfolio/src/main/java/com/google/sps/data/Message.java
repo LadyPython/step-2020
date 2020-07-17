@@ -10,24 +10,31 @@
 
 package com.google.sps.data;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 /**
  * <p>Note: The private variables in this class are converted into JSON.
  */
 
 public class Message {
-  String name;
-  String text;
+  private final String name;
+  private final String text;
+  private final String timestamp;
 
   public Message(String name, String text) { 
     this.name = name;
     this.text = text;
+    Date date = new Date();
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    this.timestamp = formatter.format(date);
   }
 
-  public boolean nameIsEmpty() { 
-    return name.length() == 0;
+  public boolean hasName() { 
+    return name != null && !name.trim().isEmpty();
   }
 
-  public boolean textIsEmpty() { 
-    return text.length() == 0;
+  public boolean hasText() { 
+    return text != null && !text.trim().isEmpty();
   }
 }
