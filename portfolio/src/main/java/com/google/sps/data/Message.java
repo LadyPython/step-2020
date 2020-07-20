@@ -13,21 +13,36 @@ package com.google.sps.data;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-/**
- * <p>Note: The private variables in this class are converted into JSON.
- */
-
 public class Message {
+  private final long id;
   private final String name;
   private final String text;
-  private final String timestamp;
+  private final long timestamp;
 
-  public Message(String name, String text) { 
+  public Message(String name, String text) {
+    this.id = 0;
     this.name = name;
     this.text = text;
-    Date date = new Date();
-    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    this.timestamp = formatter.format(date);
+    this.timestamp = 0;
+  }
+
+  public Message(long id, String name, String text, long timestamp) {
+    this.id = id;
+    this.name = name;
+    this.text = text;
+    this.timestamp = timestamp;
+  }
+
+  public String getName() { 
+    return name;
+  }
+
+  public String getText() { 
+    return text;
+  }
+
+  public long getTimestamp() { 
+    return timestamp;
   }
 
   public boolean hasName() { 

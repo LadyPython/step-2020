@@ -6,20 +6,19 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="getChat()">
-    <div id="chat">
-      <ul id="history"></ul>
+  <body onload="loadMessages(); getRandomPlaceholder('text')">
+    <h1>Chat</h1>
+    <ul id="messages-list"></ul>
 
-      <form action="/send-message" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
-        <label for="text">Message:</label>
-        <textarea id="text" name="text" onfocus="this.placeholder = ''" 
-                                        onblur="getRandomPlaceholder('text')"></textarea>
+    <form id="message-form" action="/new-message" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+      <label for="text">Message:</label>
+      <textarea id="text" name="text" onfocus="this.placeholder = ''" 
+                                    onblur="getRandomPlaceholder('text')"></textarea>
 
-        <input type="submit" />
-      </form>
-      <div id="warn-container"></div>
-    </div>
+      <button onclick="return processMessageForm()">Submit</button>
+    </form>
+    <div id="warn-container"></div>
   </body>
 </html>

@@ -8,10 +8,15 @@
   margin-top: 20px;
 }
 
-li.timestamp {
+span.timestamp {
     background-color: #a0a0a0;
 }
 
-li.name {
+span.name {
     background-color: #a31414;
+}
+
+li {
+    display: flex;
+    flex-direction: column; 
 }
