@@ -140,3 +140,16 @@ form {
 form#contact, form#cv {
     align-items: flex-end;
 }
+
+span.timestamp {
+    background-color: #a0a0a0;
+}
+
+span.name {
+    background-color: #a31414;
+}
+
+li {
+    display: flex;
+    flex-direction: column; 
+}
