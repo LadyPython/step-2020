@@ -93,6 +93,10 @@ function deleteMesage(message) {
   const params = new URLSearchParams();
   params.append('id', message.id);
   fetch('/delete-message', {method: 'POST', body: params});
+
+function loadCV() {
+  const CVContainer = document.getElementById('cv-container');
+  CVContainer.innerText = "Opening...";
 }
 
 /**
