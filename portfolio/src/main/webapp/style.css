@@ -1,155 +1,195 @@
 html,
 body {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 html * {
-    margin: 0;
-    border: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-image: url('/images/me.png');
-    background-color: #101010;
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-    background-position: left;
+  background-color: #101010;
 
-    position: relative;
-
-    font-family: 'Poppins', sans-serif;
-    font-style: normal;
-    font-size: 3rem;
-    font-weight: 200;
-    color: white;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-size: 40px;
+  font-weight: 200;
+  color: white;
 }
 
-.content {
-    position: absolute;
-    right: 0;
-    top: 20%;
-
-    text-align: right;
-
-    margin-right: 3rem;
-}
-
-#ladypython {
-    color: #a31414;
-    font-size: 5rem;
-    font-weight: 300;
-    margin-bottom: 1rem;
-}
-
-#feature {
-    font-size: 6.3rem;
-    font-weight: 700;
-    line-height: 1; 
-}
-
-#description {
-    margin-bottom: 3rem;
-}
-
-header {
-    position: absolute;
-    right: 0;
-
-    margin-top: 1rem;
-    margin-right: 3rem;
-}
-
-button {
-    margin-top: 1rem;
-    padding: 1rem 6rem;
-    font-family : inherit;
-    font-size: 3rem;
-    font-weight: 300;
-    color: white;
-
-    background-color: #242424;
-    border: 2px solid white;
-    border-radius: 15px;
-
-    transition-duration: 0.4s;
-}
-
-button:hover {
-    background-color: #101010;
-}
-
-button:active {
-    background-color: white;
-    color: black;
-}
-
-button:focus {
-    outline: none;
-}
-
-a {
-    color: white;
-    font-size: 2rem;
-}
-
-a:hover {
-    color: #a0a0a0;
-}
-
-a:active {
-    color: #a31414;
-}
-
-a:focus {
-    outline: none;
+header, .content {
+  padding: 20px 40px;
 }
 
 ul {
-    list-style-type:none;
+  list-style-type: none;
 }
 
-#contacts {
-    margin-bottom: 1em;
+button {
+  font-family : inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: white;
+  
+  padding: 0.5em 1em;
+
+  background-color: #101010;
+  border: 2px solid white;
+  border-radius: 15px;
+
+  transition-duration: 0.4s;
+}
+button:hover {
+  background-color: #242424;
+}
+button:active {
+  background-color: black;
+}
+button:focus {
+  outline: none;
+}
+
+button.delete {
+  font-size: 0;
+  padding: 0 15px;
+  margin: 0;
+  margin-right: 5px;
+  border: 0;
+  border-radius: 8px;
+}
+
+button#cv {
+  padding: 0.6em 2em;
+}
+
+a {
+  color: white;
+}
+
+input {
+  border: 2px solid #a0a0a0;
+  border-radius: 5px;
+
+  font-family: inherit;
+  font-size: 0.5em;
+}
+input:focus {
+  outline: none;
 }
 
 textarea {
-  height: 6rem;
-  min-height: 3rem;
-  max-height: 20rem;
+  height: 4em;
+  min-height: 2em;
+  max-height: 10em;
   resize: vertical;
 
   border: 2px solid #a0a0a0;
   border-radius: 5px;
 
   font-family: inherit;
-  font-size: 2rem;
+  font-size: 0.5em;
   align-self: stretch;
 }
-
 textarea:focus {
   outline: none;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
+select {
+  font-family : inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: white;
+
+  background-color: #101010;
+  border: 2px solid white;
+  border-radius: 10px;
+}
+select:focus {
+  outline: none;
 }
 
-form#contact, form#cv {
-    align-items: flex-end;
+.me-background {
+  background-image: url('/images/me.png');
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: left;
 }
 
-span.timestamp {
-    background-color: #a0a0a0;
+.nav-links {
+  display: flex;
+  justify-content: flex-end;
 }
 
-span.name {
-    background-color: #a31414;
+.nav-links a {
+  padding: 0.6em 1em;
+  text-decoration: none;
+}
+.nav-links a:hover {
+  background-color: #242424;
+}
+.nav-links a:active {
+  background-color: black;
+}
+.nav-links a:focus {
+  outline: none;
+}
+.nav-links a.active {
+  background-color: #a31414;
 }
 
-li {
-    display: flex;
-    flex-direction: column; 
+.right {
+  text-align: right;
+}
+
+#main {
+  margin-top: 3em;
+}
+
+#ladypython {
+  color: #a31414;
+  font-size: 2em;
+  font-weight: 300;
+  margin-bottom: 0.5em;
+}
+
+#feature {
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#description {
+  margin-bottom: 1em;
+}
+
+#messages-list {
+  font-size: 0.5em;
+}
+
+#messages-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.timestamp {
+  color: #a0a0a0;
+  margin-right: 1em;
+}
+
+.name {
+  color: #a31414;
+  margin-right: 1em;
+}
+
+#message-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#text {
+  margin-bottom: 1em;
 }

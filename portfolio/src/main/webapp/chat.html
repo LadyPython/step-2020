@@ -4,21 +4,45 @@
     <meta charset="UTF-8">
     <title>Chat</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,700;0,900;1,100;1,200;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <script src="script.js"></script>
   </head>
   <body onload="loadMessages(); getRandomPlaceholder('text')">
-    <h1>Chat</h1>
-    <ul id="messages-list"></ul>
+    <header>
+      <nav>
+        <div>
+          <ul class="nav-links">
+            <li><a href="tmp.html">Tmp</a></li>
+            <li><a class="active" href="chat.html">Chat</a></li>
+            <li><a href="contacts.html">Contact</a></li>
+            <li><a href="index.html">About</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <div id="chat" class="content">
+      <div> 
+        <label for="number-messages">Choose a number of displayed messages:</label>
+        <select onchange="loadMessages()" id="number-messages" name="number-messages">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="50">50</option>
+          <option value="1000000">all</option>
+        </select>
+        <ul id="messages-list"></ul>
+      </div>
+      <div>
+        <form id="message-form" action="/new-message" method="POST">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name">
+          <label for="text">Message:</label>
+          <textarea id="text" name="text" onfocus="this.placeholder = ''" 
+                                          onblur="getRandomPlaceholder('text')"></textarea>
 
-    <form id="message-form" action="/new-message" method="POST">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name">
-      <label for="text">Message:</label>
-      <textarea id="text" name="text" onfocus="this.placeholder = ''" 
-                                    onblur="getRandomPlaceholder('text')"></textarea>
-
-      <button onclick="return processMessageForm()">Submit</button>
-    </form>
-    <div id="warn-container"></div>
+          <button onclick="return processMessageForm()">Submit</button>
+        </form>
+        <div id="warn-container"></div>
+      </div>
+    </div>
   </body>
 </html>

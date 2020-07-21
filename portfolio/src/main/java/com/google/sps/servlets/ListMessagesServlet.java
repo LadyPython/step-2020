@@ -42,14 +42,20 @@ public class ListMessagesServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    long value = Integer.parseInt(request.getParameter("value"));
+    
     List<Message> messages = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
+      if (value == 0) {
+          break;
+      }
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String text = (String) entity.getProperty("text");
       long timestamp = (long) entity.getProperty("timestamp");
 
       messages.add(new Message(id, name, text, timestamp));
+      value -= 1;
     }
 
     response.setContentType("application/json;");
