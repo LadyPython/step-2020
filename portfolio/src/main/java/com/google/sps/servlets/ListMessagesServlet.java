@@ -42,11 +42,16 @@ public class ListMessagesServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    long value = Integer.parseInt(request.getParameter("value"));
+    long number_messages = 5;
+    try {
+      number_messages = Integer.parseInt(request.getParameter("number_messages"));
+    } catch (NumberFormatException e) {
+      System.err.println("User choose not a number for number_messages: " + e);
+    }
     
     List<Message> messages = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      if (value == 0) {
+      if (number_messages == 0) {
           break;
       }
       long id = entity.getKey().getId();
@@ -55,7 +60,7 @@ public class ListMessagesServlet extends HttpServlet {
       long timestamp = (long) entity.getProperty("timestamp");
 
       messages.add(new Message(id, name, text, timestamp));
-      value -= 1;
+      number_messages -= 1;
     }
 
     response.setContentType("application/json;");

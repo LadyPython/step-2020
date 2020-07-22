@@ -14,8 +14,8 @@
 
 /** Fetches messages from the server and adds them to the DOM. */
 function loadMessages() {
-  var value = document.getElementById("number-messages").value;
-  fetch('/list-messages?value='+value).then(response => response.json()).then((messages) => {
+  var number_messages = document.getElementById("number-messages").value;
+  fetch('/list-messages?number_messages='+number_messages).then(response => response.json()).then((messages) => {
     const messageListElement = document.getElementById('messages-list');
     messageListElement.innerHTML = "";
     messages.forEach((message) => {
