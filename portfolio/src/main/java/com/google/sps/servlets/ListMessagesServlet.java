@@ -42,14 +42,25 @@ public class ListMessagesServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    long number_messages = 5;
+    try {
+      number_messages = Integer.parseInt(request.getParameter("number_messages"));
+    } catch (NumberFormatException e) {
+      System.err.println("User choose not a number for number_messages: " + e);
+    }
+    
     List<Message> messages = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
+      if (number_messages == 0) {
+          break;
+      }
       long id = entity.getKey().getId();
       String name = (String) entity.getProperty("name");
       String text = (String) entity.getProperty("text");
       long timestamp = (long) entity.getProperty("timestamp");
 
       messages.add(new Message(id, name, text, timestamp));
+      number_messages -= 1;
     }
 
     response.setContentType("application/json;");

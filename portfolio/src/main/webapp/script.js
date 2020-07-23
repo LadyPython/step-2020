@@ -14,8 +14,10 @@
 
 /** Fetches messages from the server and adds them to the DOM. */
 function loadMessages() {
-  fetch('/list-messages').then(response => response.json()).then((messages) => {
+  var number_messages = document.getElementById("number-messages").value;
+  fetch('/list-messages?number_messages='+number_messages).then(response => response.json()).then((messages) => {
     const messageListElement = document.getElementById('messages-list');
+    messageListElement.innerHTML = "";
     messages.forEach((message) => {
       messageListElement.appendChild(createMessageElement(message));
     })
@@ -53,7 +55,6 @@ function processWarning(name, text) {
 /** Creates an element that represents a message, including its delete button. */
 function createMessageElement(message) {
   const messageElement = document.createElement('li');
-  messageElement.className = 'message';
 
   const timeElement = document.createElement('span');
   timeElement.setAttribute('class', 'timestamp');
@@ -68,7 +69,8 @@ function createMessageElement(message) {
   textElement.innerText = message.text;
 
   const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.setAttribute('class', 'delete');
+  deleteButtonElement.innerHTML="<img src=\"images/trash.svg\">";
   deleteButtonElement.addEventListener('click', () => {
     deleteMesage(message);
 
@@ -76,10 +78,11 @@ function createMessageElement(message) {
     messageElement.remove();
   });
 
+  messageElement.appendChild(deleteButtonElement);
   messageElement.appendChild(timeElement);
   messageElement.appendChild(nameElement);
   messageElement.appendChild(textElement);
-  messageElement.appendChild(deleteButtonElement);
+  
   return messageElement;
 }
 
@@ -93,6 +96,8 @@ function deleteMesage(message) {
   const params = new URLSearchParams();
   params.append('id', message.id);
   fetch('/delete-message', {method: 'POST', body: params});
+  loadMessages();
+}
 
 function loadCV() {
   const CVContainer = document.getElementById('cv-container');
@@ -126,9 +131,7 @@ function getRandomPlaceholder(elementName) {
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
+  const greetings = ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!', 'Привет мир!', 'Բարեւ աշխարհ!'];
   // Pick a random greeting.
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
 
