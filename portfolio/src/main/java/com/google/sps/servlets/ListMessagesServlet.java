@@ -60,7 +60,7 @@ public class ListMessagesServlet extends HttpServlet {
       String text = (String) entity.getProperty("text");
       long timestamp = (long) entity.getProperty("timestamp");
 
-      messages.add(new Message(id, name, text, timestamp));
+      messages.add(new Message(id, uid, nickname, text, timestamp));
       number_messages -= 1;
     }
 
