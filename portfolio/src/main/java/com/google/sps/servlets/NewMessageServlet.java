@@ -17,8 +17,11 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
-import com.google.sps.data.Message;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,13 +33,14 @@ import javax.servlet.http.HttpServletResponse;
 public class NewMessageServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    Message message = getMessage(request);
+    UserService userService = UserServiceFactory.getUserService();
 
     // Make an Entity of message.
     Entity messageEntity = new Entity("Message");
-    messageEntity.setProperty("name", message.getName());
-    messageEntity.setProperty("text", message.getText());
+    String uid = userService.getCurrentUser().getUserId();
+    messageEntity.setProperty("uid", uid);
+    messageEntity.setProperty("nickname", getUserNickname(uid));
+    messageEntity.setProperty("text", request.getParameter("text"));
     messageEntity.setProperty("timestamp", System.currentTimeMillis());
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -46,7 +50,18 @@ public class NewMessageServlet extends HttpServlet {
     response.sendRedirect("/chat.html");
   }
 
-  private Message getMessage(HttpServletRequest request) {
-    return new Message(request.getParameter("name"), request.getParameter("text"));
+  /**
+   * Returns the nickname of the user with id, or empty String if the user has not set a nickname.
+   */
+  private String getUserNickname(String id) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return "";
+    }
+    String nickname = (String) entity.getProperty("nickname");
+    return nickname;
   }
 }

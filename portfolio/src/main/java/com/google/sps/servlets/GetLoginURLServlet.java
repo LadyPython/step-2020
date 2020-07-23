@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -21,15 +23,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
-  private int numberFetches = 0;
-
+@WebServlet("/get-login-url")
+public class GetLoginURLServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    numberFetches++;
-    
-    response.setContentType("text/html;");
-    response.getWriter().println(numberFetches);
+    response.setContentType("application/json;");
+    UserService userService = UserServiceFactory.getUserService();
+    String loginUrl = userService.createLoginURL("/chat.html");
+    Gson gson = new Gson();
+    String json = gson.toJson(loginUrl);
+    response.getWriter().println(json);
   }
 }

@@ -15,41 +15,16 @@ import java.text.SimpleDateFormat;
 
 public class Message {
   private final long id;
-  private final String name;
+  private final String uid;
+  private final String nickname;
   private final String text;
   private final long timestamp;
 
-  public Message(String name, String text) {
-    this.id = 0;
-    this.name = name;
-    this.text = text;
-    this.timestamp = 0;
-  }
-
-  public Message(long id, String name, String text, long timestamp) {
+  public Message(long id, String uid, String nickname, String text, long timestamp) {
     this.id = id;
-    this.name = name;
+    this.uid = uid;
+    this.nickname = nickname;
     this.text = text;
     this.timestamp = timestamp;
-  }
-
-  public String getName() { 
-    return name;
-  }
-
-  public String getText() { 
-    return text;
-  }
-
-  public long getTimestamp() { 
-    return timestamp;
-  }
-
-  public boolean hasName() { 
-    return name != null && !name.trim().isEmpty();
-  }
-
-  public boolean hasText() { 
-    return text != null && !text.trim().isEmpty();
   }
 }

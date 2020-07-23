@@ -55,7 +55,8 @@ public class ListMessagesServlet extends HttpServlet {
           break;
       }
       long id = entity.getKey().getId();
-      String name = (String) entity.getProperty("name");
+      String uid = (String) entity.getProperty("uid");
+      String nickname = (String) entity.getProperty("nickname");
       String text = (String) entity.getProperty("text");
       long timestamp = (long) entity.getProperty("timestamp");
 
