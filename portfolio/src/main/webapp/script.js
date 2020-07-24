@@ -43,7 +43,7 @@ function processNicknameForm() {
   var nickname = document.getElementById('nickname').value;
 
   if (nickname == null || nickname.trim().length == 0) {
-    document.getElementById('nickname-warn-container').innerText = 'Please write a nickname.\n';
+    document.getElementById('nickname-warn-container').innerText = 'Please write a nickname.';
     return false;
   }
   return true;
@@ -142,9 +142,9 @@ function loadMessageForm() {
       
       fetch('/get-nickname').then(response => response.json()).then((nickname) => {
         if (nickname != '' && nickname != null) {
-          document.getElementById('nickname-container').innerHTML = `<p><span class=\'nickname\'>${nickname}</span>Change <a href='/nickname.html'>here</a>.</p>`;
+          document.getElementById('nickname-container').innerHTML = `<p><span class="nickname">${nickname}</span>Change <a href="/nickname.html">here</a>.</p>`;
         } else {
-          document.getElementById('nickname-container').innerHTML = '<p>You don\'t have a nickname. Choose <a href="/nickname.html">here</a>.</p>';
+          document.getElementById('nickname-container').innerHTML = `<p>You don't have a nickname. Choose <a href="/nickname.html">here</a>.</p>`;
         }
       });
     }
