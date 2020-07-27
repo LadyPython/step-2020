@@ -36,6 +36,7 @@ public class NicknameServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().println("You should log in to change nickname");
       return;
     }
     

@@ -18,9 +18,11 @@ function loadMessages() {
   fetch('/list-messages?number_messages='+number_messages).then(response => response.json()).then((messages) => {
     const messageListElement = document.getElementById('messages-list');
     messageListElement.innerHTML = '';
-    messages.forEach((message) => {
-      messageListElement.appendChild(createMessageElement(message));
-    })
+    fetch('/user-info').then(response => response.json()).then((userInfo) => {
+      messages.forEach((message) => {
+        messageListElement.appendChild(createMessageElement(message, userInfo['uid']));
+      }); 
+    });
   });
 }
 
@@ -50,7 +52,7 @@ function processNicknameForm() {
 }
 
 /** Creates an element that represents a message, including its delete button. */
-function createMessageElement(message) {
+function createMessageElement(message, current_uid) {
   const messageElement = document.createElement('li');
 
   const timeElement = document.createElement('span');
@@ -64,27 +66,23 @@ function createMessageElement(message) {
   const textElement = document.createElement('span');
   textElement.setAttribute('class', 'text');
   textElement.innerText = message.text;
+
+  if (message.uid == current_uid) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.setAttribute('class', 'delete');
+    deleteButtonElement.innerHTML='<img src="images/trash.svg">';
+    deleteButtonElement.addEventListener('click', () => {
+    deleteMesage(message);
+
+    // Remove the message from the DOM.
+    messageElement.remove();
+    });
+    messageElement.appendChild(deleteButtonElement);
+  }
+  messageElement.appendChild(timeElement);
+  messageElement.appendChild(nameElement);
+  messageElement.appendChild(textElement);
   
-  fetch('/user-info').then(response => response.json()).then((userInfo) => {
-    var current_uid = userInfo['uid'];
-
-    if (message.uid == current_uid) {
-      const deleteButtonElement = document.createElement('button');
-      deleteButtonElement.setAttribute('class', 'delete');
-      deleteButtonElement.innerHTML='<img src="images/trash.svg">';
-      deleteButtonElement.addEventListener('click', () => {
-        deleteMesage(message);
-
-        // Remove the message from the DOM.
-        messageElement.remove();
-      });
-      messageElement.appendChild(deleteButtonElement);
-    }
-    messageElement.appendChild(timeElement);
-    messageElement.appendChild(nameElement);
-    messageElement.appendChild(textElement);
-  });
-
   return messageElement;
 }
 
@@ -92,6 +90,7 @@ function createMessageElement(message) {
 function deleteMesage(message) {
   const params = new URLSearchParams();
   params.append('id', message.id);
+  params.append('uid', message.uid);
   fetch('/delete-message', {method: 'POST', body: params});
   loadMessages();
 }

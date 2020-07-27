@@ -40,15 +40,11 @@ public class UserInfoServlet extends HttpServlet {
     userInfo.put("is-logged-in", isLoggedIn);
     
     if (isLoggedIn) {
-      String logoutUrl = userService.createLogoutURL("/chat.html");
-      String uid = userService.getCurrentUser().getUserId();
-      String nickname = User.getUserNickname(userService.getCurrentUser().getUserId());
-      userInfo.put("logout-url", logoutUrl);
-      userInfo.put("uid", uid);
-      userInfo.put("nickname", nickname);
+      userInfo.put("logout-url", userService.createLogoutURL("/chat.html"));
+      userInfo.put("uid", userService.getCurrentUser().getUserId());
+      userInfo.put("nickname", User.getUserNickname(userService.getCurrentUser().getUserId()));
     } else {
-      String loginUrl = userService.createLoginURL("/chat.html");
-      userInfo.put("login-url", loginUrl);
+      userInfo.put("login-url", userService.createLoginURL("/chat.html"));
     }
     
     Gson gson = new Gson();

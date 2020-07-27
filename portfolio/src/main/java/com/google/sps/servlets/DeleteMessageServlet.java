@@ -34,6 +34,7 @@ public class DeleteMessageServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().println("You should log in to delete messages");
       return;
     }
 
@@ -42,7 +43,17 @@ public class DeleteMessageServlet extends HttpServlet {
       id = Long.parseLong(request.getParameter("id"));
     } catch (NumberFormatException e) {
       System.err.println("Message id for deleting is not long: " + e);
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().println("Message id should be long");
+      return;
+    }
+
+    String current_uid = userService.getCurrentUser().getUserId();
+    String message_uid = request.getParameter("uid");
+    if (!current_uid.equals(message_uid)) {
+      System.err.println("User tries to delete others message");
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().println("You can delete only your messages");
       return;
     }
 
