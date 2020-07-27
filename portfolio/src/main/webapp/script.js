@@ -65,8 +65,9 @@ function createMessageElement(message) {
   textElement.setAttribute('class', 'text');
   textElement.innerText = message.text;
   
-  fetch('/get-uid').then(response => response.json()).then((current_uid) => {
-    console.log(current_uid, message.uid)
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var current_uid = userInfo['uid'];
+
     if (message.uid == current_uid) {
       const deleteButtonElement = document.createElement('button');
       deleteButtonElement.setAttribute('class', 'delete');
@@ -87,11 +88,6 @@ function createMessageElement(message) {
   return messageElement;
 }
 
-function formatTimestamp(timestamp) {
-  var date = new Date(timestamp);
-  return date.toLocaleString();
-}
-
 /** Tells the server to delete the message. */
 function deleteMesage(message) {
   const params = new URLSearchParams();
@@ -106,47 +102,41 @@ function loadCV() {
 }
 
 function loadNicknameForm() {
-  fetch('/is-logged-in').then(response => response.json()).then((isLoggedIn) => {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+
     if (!isLoggedIn) {
       document.getElementById('nickname-container').hidden = true;
-      fetch('/get-login-url').then(response => response.json()).then((URL) => {
-        document.getElementById('log-container').innerHTML = `<p>Want to choose a nickname? Please, <a href=${URL}>login</a></p>`;
-      });
+      document.getElementById('log-container').innerHTML = `<p>Want to choose a nickname? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
     } else {
       document.getElementById('nickname-container').hidden = false;
-      fetch('/get-logout-url').then(response => response.json()).then((URL) => {
-        document.getElementById('log-container').innerHTML = `<p>You can <a href=${URL}>logout</a></p>`;
-      });
+      document.getElementById('log-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
       
-      fetch('/get-nickname').then(response => response.json()).then((nickname) => {
-        if (nickname != '' && nickname != null) {
-          document.getElementById('nickname').value = nickname;
-        }
-      });
+      var nickname = userInfo["nickname"];
+      if (nickname != '' && nickname != null) {
+        document.getElementById('nickname').value = nickname;
+      }
     }
   });
 }
 
 function loadMessageForm() {
-  fetch('/is-logged-in').then(response => response.json()).then((isLoggedIn) => {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+
     if (!isLoggedIn) {
       document.getElementById('message-container').hidden = true;
-      fetch('/get-login-url').then(response => response.json()).then((URL) => {
-        document.getElementById('log-container').innerHTML = `<p>Want to send a message? Please, <a href=${URL}>login</a></p>`;
-      });
+      document.getElementById('log-container').innerHTML = `<p>Want to send a message? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
     } else {
       document.getElementById('message-container').hidden = false;
-      fetch('/get-logout-url').then(response => response.json()).then((URL) => {
-        document.getElementById('log-container').innerHTML = `<p>You can <a href=${URL}>logout</a></p>`;
-      });
+      document.getElementById('log-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
       
-      fetch('/get-nickname').then(response => response.json()).then((nickname) => {
-        if (nickname != '' && nickname != null) {
-          document.getElementById('nickname-container').innerHTML = `<p><span class="nickname">${nickname}</span>Change <a href="/nickname.html">here</a>.</p>`;
-        } else {
-          document.getElementById('nickname-container').innerHTML = `<p>You don't have a nickname. Choose <a href="/nickname.html">here</a>.</p>`;
-        }
-      });
+      var nickname = userInfo["nickname"];
+      if (nickname != '' && nickname != null) {
+        document.getElementById('nickname-container').innerHTML = `<p><span class="nickname">${nickname}</span>Change <a href="/nickname.html">here</a>.</p>`;
+      } else {
+        document.getElementById('nickname-container').innerHTML = `<p>You don't have a nickname. Choose <a href="/nickname.html">here</a>.</p>`;
+      }
     }
   });
 }
@@ -185,4 +175,9 @@ function addRandomGreeting() {
   // Add it to the page.
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
+}
+
+function formatTimestamp(timestamp) {
+  var date = new Date(timestamp);
+  return date.toLocaleString();
 }

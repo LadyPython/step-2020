@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
@@ -23,19 +24,35 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.HashMap;
 
-@WebServlet("/get-uid")
-public class GetUIDServlet extends HttpServlet {
+@WebServlet("/user-info")
+public class UserInfoServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     UserService userService = UserServiceFactory.getUserService();
-    Gson gson = new Gson();
-    if (!userService.isUserLoggedIn()) {
-      response.getWriter().println(gson.toJson(""));
-      return;
+    
+    boolean isLoggedIn = userService.isUserLoggedIn();
+    
+    Map<String, Object> userInfo = new HashMap<String, Object>();
+    userInfo.put("is-logged-in", isLoggedIn);
+    
+    if (isLoggedIn) {
+      String logoutUrl = userService.createLogoutURL("/chat.html");
+      String uid = userService.getCurrentUser().getUserId();
+      String nickname = User.getUserNickname(userService.getCurrentUser().getUserId());
+      userInfo.put("logout-url", logoutUrl);
+      userInfo.put("uid", uid);
+      userInfo.put("nickname", nickname);
+    } else {
+      String loginUrl = userService.createLoginURL("/chat.html");
+      userInfo.put("login-url", loginUrl);
     }
-    String json = gson.toJson(userService.getCurrentUser().getUserId());
+    
+    Gson gson = new Gson();
+    String json = gson.toJson(userInfo);
     response.getWriter().println(json);
   }
 }

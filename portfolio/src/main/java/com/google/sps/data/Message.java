@@ -10,9 +10,6 @@
 
 package com.google.sps.data;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
 public class Message {
   private final long id;
   private final String uid;

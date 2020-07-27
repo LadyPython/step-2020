@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.User;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -34,12 +35,16 @@ public class NewMessageServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
 
     // Make an Entity of message.
     Entity messageEntity = new Entity("Message");
     String uid = userService.getCurrentUser().getUserId();
     messageEntity.setProperty("uid", uid);
-    messageEntity.setProperty("nickname", getUserNickname(uid));
+    messageEntity.setProperty("nickname", User.getUserNickname(uid));
     messageEntity.setProperty("text", request.getParameter("text"));
     messageEntity.setProperty("timestamp", System.currentTimeMillis());
     
@@ -48,20 +53,5 @@ public class NewMessageServlet extends HttpServlet {
 
     // Redirect back to the HTML page.
     response.sendRedirect("/chat.html");
-  }
-
-  /**
-   * Returns the nickname of the user with id, or empty String if the user has not set a nickname.
-   */
-  private String getUserNickname(String id) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
-    PreparedQuery results = datastore.prepare(query);
-    Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return "";
-    }
-    String nickname = (String) entity.getProperty("nickname");
-    return nickname;
   }
 }
