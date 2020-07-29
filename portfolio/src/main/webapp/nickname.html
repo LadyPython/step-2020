@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,700;0,900;1,100;1,200;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <script src="script.js"></script>
+  </head>
+  <body onload="loadNicknameForm(); getRandomPlaceholder('text')">
+    <header>
+      <nav>
+        <div>
+          <ul class="nav-links">
+            <li><a href="tmp.html">Tmp</a></li>
+            <li><a href="chat.html">Chat</a></li>
+            <li><a href="contacts.html">Contact</a></li>
+            <li><a href="index.html">About</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <div class="content">
+      <div id="log-container"></div>
+      <div id="nickname-container">
+        <p>Change your nickname here:</p>
+        <form method="POST" action="/user-info">
+          <label for="nickname">Nickname:</label>
+          <input id="nickname" name="nickname"/>
+          <button onclick="return processNicknameForm()">Submit</button>
+        </form>
+        <div id="nickname-warn-container"></div>
+      </div>
+    </div>
+  </body>
+</html>

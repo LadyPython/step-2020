@@ -54,12 +54,12 @@ public class ListMessagesServlet extends HttpServlet {
       if (number_messages == 0) {
           break;
       }
-      long id = entity.getKey().getId();
-      String name = (String) entity.getProperty("name");
-      String text = (String) entity.getProperty("text");
-      long timestamp = (long) entity.getProperty("timestamp");
-
-      messages.add(new Message(id, name, text, timestamp));
+      
+      messages.add(new Message(entity.getKey().getId(),
+                               (String) entity.getProperty("uid"),
+                               (String) entity.getProperty("nickname"), 
+                               (String) entity.getProperty("text"),
+                               (long) entity.getProperty("timestamp")));
       number_messages -= 1;
     }
 

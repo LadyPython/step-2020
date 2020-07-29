@@ -1,59 +1,58 @@
 // Copyright 2019 Google LLC
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the 'License');
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
+// distributed under the License is distributed on an 'AS IS' BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
 /** Fetches messages from the server and adds them to the DOM. */
 function loadMessages() {
-  var number_messages = document.getElementById("number-messages").value;
+  var number_messages = document.getElementById('number-messages').value;
   fetch('/list-messages?number_messages='+number_messages).then(response => response.json()).then((messages) => {
     const messageListElement = document.getElementById('messages-list');
-    messageListElement.innerHTML = "";
-    messages.forEach((message) => {
-      messageListElement.appendChild(createMessageElement(message));
-    })
+    messageListElement.innerHTML = '';
+    fetch('/user-info').then(response => response.json()).then((userInfo) => {
+      messages.forEach((message) => {
+        messageListElement.appendChild(createMessageElement(message, userInfo['uid']));
+      }); 
+    });
   });
 }
 
 /** Validate the form and add warning if something wrong. */
 function processMessageForm() {
-  document.getElementById('warn-container').innerText = "";
+  document.getElementById('message-warn-container').innerText = '';
   
-  var name = document.getElementById('name').value;
   var text = document.getElementById('text').value;
 
-  var warning = processWarning(name, text);
-  if (warning.length != 0) {
-    document.getElementById('warn-container').innerText = warning;
+  if (text == null || text.trim().length == 0) {
+    document.getElementById('message-warn-container').innerText = 'Please write a message.';
     return false;
   }
-
   return true;
 }
 
-/** Returns the warning if the message is empty or name is anonym. Return "" if everything OK. */
-function processWarning(name, text) {
-  var warning = "";
-  if (name.trim().length == 0) {
-    warning += "Please choose a name.\n";
+function processNicknameForm() {
+  document.getElementById('nickname-warn-container').innerText = '';
+  
+  var nickname = document.getElementById('nickname').value;
+
+  if (nickname == null || nickname.trim().length == 0) {
+    document.getElementById('nickname-warn-container').innerText = 'Please write a nickname.';
+    return false;
   }
-  if (text.trim().length == 0) {
-    warning += "Please write a message.\n";
-  }
-  return warning;
+  return true;
 }
 
 /** Creates an element that represents a message, including its delete button. */
-function createMessageElement(message) {
+function createMessageElement(message, current_uid) {
   const messageElement = document.createElement('li');
 
   const timeElement = document.createElement('span');
@@ -61,24 +60,25 @@ function createMessageElement(message) {
   timeElement.innerText = formatTimestamp(message.timestamp);
 
   const nameElement = document.createElement('span');
-  nameElement.setAttribute('class', 'name');
-  nameElement.innerText = message.name;
+  nameElement.setAttribute('class', 'nickname');
+  nameElement.innerText = message.nickname;
 
   const textElement = document.createElement('span');
   textElement.setAttribute('class', 'text');
   textElement.innerText = message.text;
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.setAttribute('class', 'delete');
-  deleteButtonElement.innerHTML="<img src=\"images/trash.svg\">";
-  deleteButtonElement.addEventListener('click', () => {
+  if (message.uid == current_uid) {
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.setAttribute('class', 'delete');
+    deleteButtonElement.innerHTML='<img src="images/trash.svg">';
+    deleteButtonElement.addEventListener('click', () => {
     deleteMesage(message);
 
     // Remove the message from the DOM.
     messageElement.remove();
-  });
-
-  messageElement.appendChild(deleteButtonElement);
+    });
+    messageElement.appendChild(deleteButtonElement);
+  }
   messageElement.appendChild(timeElement);
   messageElement.appendChild(nameElement);
   messageElement.appendChild(textElement);
@@ -86,22 +86,58 @@ function createMessageElement(message) {
   return messageElement;
 }
 
-function formatTimestamp(timestamp) {
-  var date = new Date(timestamp);
-  return date.toLocaleString();
-}
-
 /** Tells the server to delete the message. */
 function deleteMesage(message) {
   const params = new URLSearchParams();
   params.append('id', message.id);
+  params.append('uid', message.uid);
   fetch('/delete-message', {method: 'POST', body: params});
   loadMessages();
 }
 
 function loadCV() {
   const CVContainer = document.getElementById('cv-container');
-  CVContainer.innerText = "Opening...";
+  CVContainer.innerText = 'Opening...';
+}
+
+function loadNicknameForm() {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+
+    if (!isLoggedIn) {
+      document.getElementById('nickname-container').hidden = true;
+      document.getElementById('log-container').innerHTML = `<p>Want to choose a nickname? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
+    } else {
+      document.getElementById('nickname-container').hidden = false;
+      document.getElementById('log-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
+      
+      var nickname = userInfo["nickname"];
+      if (nickname != '' && nickname != null) {
+        document.getElementById('nickname').value = nickname;
+      }
+    }
+  });
+}
+
+function loadMessageForm() {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+
+    if (!isLoggedIn) {
+      document.getElementById('message-container').hidden = true;
+      document.getElementById('log-container').innerHTML = `<p>Want to send a message? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
+    } else {
+      document.getElementById('message-container').hidden = false;
+      document.getElementById('log-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
+      
+      var nickname = userInfo["nickname"];
+      if (nickname != '' && nickname != null) {
+        document.getElementById('nickname-container').innerHTML = `<p><span class="nickname">${nickname}</span>Change <a href="/nickname.html">here</a>.</p>`;
+      } else {
+        document.getElementById('nickname-container').innerHTML = `<p>You don't have a nickname. Choose <a href="/nickname.html">here</a>.</p>`;
+      }
+    }
+  });
 }
 
 /**
@@ -109,8 +145,8 @@ function loadCV() {
  */
 
 function getData() {
-  fetch('/data').then(response => response.json()).then((comment) => {
-    document.getElementById('data-container').innerText = comment;
+  fetch('/data').then(response => response.json()).then((count) => {
+    document.getElementById('data-container').innerText = count;
   });
 }
 
@@ -138,4 +174,9 @@ function addRandomGreeting() {
   // Add it to the page.
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
+}
+
+function formatTimestamp(timestamp) {
+  var date = new Date(timestamp);
+  return date.toLocaleString();
 }

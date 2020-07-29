@@ -18,8 +18,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.gson.Gson;
-import com.google.sps.data.Message;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,7 +31,31 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteMessageServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    long id = Long.parseLong(request.getParameter("id"));
+    UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().println("You should log in to delete messages");
+      return;
+    }
+
+    long id;
+    try {
+      id = Long.parseLong(request.getParameter("id"));
+    } catch (NumberFormatException e) {
+      System.err.println("Message id for deleting is not long: " + e);
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().println("Message id should be long");
+      return;
+    }
+
+    String current_uid = userService.getCurrentUser().getUserId();
+    String message_uid = request.getParameter("uid");
+    if (!current_uid.equals(message_uid)) {
+      System.err.println("User tries to delete others message");
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      response.getWriter().println("You can delete only your messages");
+      return;
+    }
 
     Key messageEntityKey = KeyFactory.createKey("Message", id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

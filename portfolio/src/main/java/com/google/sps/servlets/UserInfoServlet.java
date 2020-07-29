@@ -15,43 +15,65 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.HashMap;
 
-/** Servlet responsible for creating new messagess. */
-@WebServlet("/new-message")
-public class NewMessageServlet extends HttpServlet {
+@WebServlet("/user-info")
+public class UserInfoServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().println("You should log in to change nickname");
       return;
     }
-
-    // Make an Entity of message.
-    Entity messageEntity = new Entity("Message");
-    String uid = userService.getCurrentUser().getUserId();
-    messageEntity.setProperty("uid", uid);
-    messageEntity.setProperty("nickname", User.getUserNickname(uid));
-    messageEntity.setProperty("text", request.getParameter("text"));
-    messageEntity.setProperty("timestamp", System.currentTimeMillis());
     
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(messageEntity);
+    String nickname = request.getParameter("nickname");
+    String id = userService.getCurrentUser().getUserId();
 
-    // Redirect back to the HTML page.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity entity = new Entity("UserInfo", id);
+    entity.setProperty("id", id);
+    entity.setProperty("nickname", nickname);
+    datastore.put(entity);
+
     response.sendRedirect("/chat.html");
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("application/json;");
+    UserService userService = UserServiceFactory.getUserService();
+    
+    boolean isLoggedIn = userService.isUserLoggedIn();
+    
+    Map<String, Object> userInfo = new HashMap<String, Object>();
+    userInfo.put("is-logged-in", isLoggedIn);
+    if (isLoggedIn) {
+      userInfo.put("logout-url", userService.createLogoutURL("/chat.html"));
+      userInfo.put("uid", userService.getCurrentUser().getUserId());
+      userInfo.put("nickname", User.getUserNickname(userService.getCurrentUser().getUserId()));
+    } else {
+      userInfo.put("login-url", userService.createLoginURL("/chat.html"));
+    }
+    
+    Gson gson = new Gson();
+    String json = gson.toJson(userInfo);
+    response.getWriter().println(json);
   }
 }
