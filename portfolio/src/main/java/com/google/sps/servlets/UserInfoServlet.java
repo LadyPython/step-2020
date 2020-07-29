@@ -17,6 +17,11 @@ package com.google.sps.servlets;
 import com.google.sps.data.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,6 +35,27 @@ import java.util.HashMap;
 @WebServlet("/user-info")
 public class UserInfoServlet extends HttpServlet {
   @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.getWriter().println("You should log in to change nickname");
+      return;
+    }
+    
+    String nickname = request.getParameter("nickname");
+    String id = userService.getCurrentUser().getUserId();
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity entity = new Entity("UserInfo", id);
+    entity.setProperty("id", id);
+    entity.setProperty("nickname", nickname);
+    datastore.put(entity);
+
+    response.sendRedirect("/chat.html");
+  }
+
+  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     UserService userService = UserServiceFactory.getUserService();
@@ -38,7 +64,6 @@ public class UserInfoServlet extends HttpServlet {
     
     Map<String, Object> userInfo = new HashMap<String, Object>();
     userInfo.put("is-logged-in", isLoggedIn);
-    
     if (isLoggedIn) {
       userInfo.put("logout-url", userService.createLogoutURL("/chat.html"));
       userInfo.put("uid", userService.getCurrentUser().getUserId());
