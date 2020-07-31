@@ -140,6 +140,24 @@ function loadMessageForm() {
   });
 }
 
+function loadPizzaVote() {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+    var vote = userInfo["vote"];
+    console.log(vote);
+    if (!isLoggedIn) {
+      document.getElementById('pizza').hidden = true;
+      document.getElementById('log-vote-container').innerHTML = `<p>Want to vote? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
+    } else if (vote != null) {
+      document.getElementById('pizza').hidden = true;
+      document.getElementById('log-vote-container').innerHTML = `<p>You have already voted. <a href=${userInfo["logout-url"]}>Logout</a></p>`;
+    } else {
+      document.getElementById('pizza').hidden = false;
+      document.getElementById('log-vote-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
+    }
+  });
+}
+
 /**
  * Adds a number of fetches to the page.
  */
@@ -180,12 +198,6 @@ function formatTimestamp(timestamp) {
   var date = new Date(timestamp);
   return date.toLocaleString();
 }
-
-google.charts.load('current', {
-    'packages':['corechart', 'geochart', 'bar'],
-    'mapsApiKey': 'AIzaSyCkQLs5cnX5WGSA1Lhz8TBv5wNOB4qfx-Q'
-});
-google.charts.setOnLoadCallback(drawCharts);
 
 function drawCharts() {
   drawCountries();
@@ -301,6 +313,26 @@ function drawAges() {
   });
 }
 
-function checkAndGetFromJson(json, key) {
-    return json.has(key) ? key : 0;
+function drawPizza() {
+  fetch('/pizza-data').then(response => response.json()).then((sliceVotes) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'slice');
+    data.addColumn('number', 'votes');
+    Object.keys(sliceVotes).forEach((slice) => {
+      data.addRow([slice, sliceVotes[slice]]);
+    });
+
+    const options = {
+      colors: ['white', '#ffcccc', '#ff9999', '#ff6666', '#ff3333', 'red'],
+      backgroundColor: '#101010',
+      pieSliceTextStyle: {color: 'black'},
+      legend: 'none',
+      width: 520,
+      height: 520,
+      chartArea: {width: 500, height: 500}
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('chart-pizza-container'));
+    chart.draw(data, options);
+  });
 }

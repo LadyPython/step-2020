@@ -193,3 +193,76 @@ select:focus {
 #text {
   margin-bottom: 1em;
 }
+
+div#pizza {
+  display: inline-block;
+}
+div#chart-pizza-container {
+  display: inline-block;
+}
+
+.pizza {
+  position: relative;
+  padding: 0;
+  width: 500px; 
+  height: 500px;
+  border-radius: 50%;
+  list-style: none;
+}
+.slice {
+  overflow: hidden;
+  position: absolute;
+  top: 0; 
+  right: 0;
+  width: 50%; 
+  height: 50%;
+  transform-origin: 0% 100%;
+}
+
+li.slice:nth-child(1) {
+  transform:rotate(0deg) skewy(-30deg);
+}
+li.slice:nth-child(1) .slice-content:not(:hover) {
+  background-color: white;
+}
+li.slice:nth-child(2) {
+  transform:rotate(60deg) skewy(-30deg);
+}
+li.slice:nth-child(2) .slice-content:not(:hover) {
+  background-color: #ffcccc;
+}
+li.slice:nth-child(3) {
+  transform:rotate(120deg) skewy(-30deg);
+}
+li.slice:nth-child(3) .slice-content:not(:hover) {
+  background-color: #ff9999;
+}
+li.slice:nth-child(4) {
+  transform:rotate(180deg) skewy(-30deg);
+}
+li.slice:nth-child(4) .slice-content:not(:hover) {
+  background-color: #ff6666;
+}
+li.slice:nth-child(5) {
+  transform:rotate(240deg) skewy(-30deg);
+}
+li.slice:nth-child(5) .slice-content:not(:hover) {
+  background-color: #ff3333;
+}
+li.slice:nth-child(6) {
+  transform:rotate(300deg) skewy(-30deg);
+}
+li.slice:nth-child(6) .slice-content:not(:hover) {
+  background-color: red;
+}
+
+.slice-content {
+  transform: skewy(30deg);
+  position: absolute;
+  left: -100%;
+  width: 200%; height: 200%;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.slice-content:hover {background-color: #242424;}
+.slice-content:active {background-color: black;}

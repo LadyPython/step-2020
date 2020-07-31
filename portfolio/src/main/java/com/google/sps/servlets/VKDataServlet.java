@@ -31,13 +31,16 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/vk-data")
 public class VKDataServlet extends HttpServlet {
 
-  private Map<String, Integer> countries = new HashMap<>();
-  private Map<String, Integer> cities = new HashMap<>();
+  private Map<String, Integer> countries_sorted = new LinkedHashMap<>();
+  private Map<String, Integer> cities_sorted = new LinkedHashMap<>();
   private Map<String, Integer> genders = new HashMap<>();
   private Map<String, Map<String, Integer>> views = new LinkedHashMap<>();
 
   @Override
   public void init() {
+    Map<String, Integer> countries = new HashMap<>();
+    Map<String, Integer> cities = new HashMap<>();
+
     Scanner scanner = new Scanner(getServletContext().getResourceAsStream(
         "/WEB-INF/vkontakte_stat.csv"));
     while (scanner.hasNextLine()) {
@@ -121,6 +124,18 @@ public class VKDataServlet extends HttpServlet {
       }
     }
     scanner.close();
+
+    List<Map.Entry<String, Integer>> countries_list = new ArrayList<>(countries.entrySet());
+    countries_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+    for (Map.Entry<String, Integer> entry : countries_list) {
+        countries_sorted.put(entry.getKey(), entry.getValue());
+    }
+
+    List<Map.Entry<String, Integer>> cities_list = new ArrayList<>(cities.entrySet());
+    cities_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+    for (Map.Entry<String, Integer> entry : cities_list) {
+        cities_sorted.put(entry.getKey(), entry.getValue());
+    }
   }
 
   @Override
@@ -130,21 +145,9 @@ public class VKDataServlet extends HttpServlet {
     String json = "";
     switch (request.getParameter("type")) {
       case "countries":
-        List<Map.Entry<String, Integer>> countries_list = new ArrayList<>(countries.entrySet());
-        countries_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        Map<String, Integer> countries_sorted = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> entry : countries_list) {
-          countries_sorted.put(entry.getKey(), entry.getValue());
-        }
         json = gson.toJson(countries_sorted);
         break;
       case "cities":
-        List<Map.Entry<String, Integer>> cities_list = new ArrayList<>(cities.entrySet());
-        cities_list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        Map<String, Integer> cities_sorted = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> entry : cities_list) {
-          cities_sorted.put(entry.getKey(), entry.getValue());
-        }
         json = gson.toJson(cities_sorted);
         break;
       case "genders":

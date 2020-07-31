@@ -60,16 +60,19 @@ public class UserInfoServlet extends HttpServlet {
     response.setContentType("application/json;");
     UserService userService = UserServiceFactory.getUserService();
     
+    String destinationURL = request.getHeader("referer");
+    System.out.println(destinationURL);
     boolean isLoggedIn = userService.isUserLoggedIn();
     
     Map<String, Object> userInfo = new HashMap<String, Object>();
     userInfo.put("is-logged-in", isLoggedIn);
     if (isLoggedIn) {
-      userInfo.put("logout-url", userService.createLogoutURL("/chat.html"));
+      userInfo.put("logout-url", userService.createLogoutURL(destinationURL));
       userInfo.put("uid", userService.getCurrentUser().getUserId());
       userInfo.put("nickname", User.getUserNickname(userService.getCurrentUser().getUserId()));
+      userInfo.put("vote", User.getVote(userService.getCurrentUser().getUserId()));
     } else {
-      userInfo.put("login-url", userService.createLoginURL("/chat.html"));
+      userInfo.put("login-url", userService.createLoginURL(destinationURL));
     }
     
     Gson gson = new Gson();

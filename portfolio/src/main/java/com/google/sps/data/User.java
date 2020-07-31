@@ -30,4 +30,14 @@ public class User {
     }
     return (String) entity.getProperty("nickname");
   }
+  public static Integer getVote(String id) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Vote").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return null;
+    }
+    return (int) (long) entity.getProperty("slice");
+  }
 }
