@@ -208,10 +208,10 @@ div#chart-pizza-container {
 .slice-container {
   overflow: hidden;
   position: absolute;
-  top: 0; 
-  right: 0;
-  width: 50%; 
-  height: 50%;
+  top: 2px; 
+  right: 2px;
+  width: 48%; 
+  height: 48%;
   transform-origin: 0% 100%;
 }
 
