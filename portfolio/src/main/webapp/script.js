@@ -146,13 +146,16 @@ function loadPizzaVote() {
     var vote = userInfo["vote"];
 
     if (!isLoggedIn) {
-      document.getElementById('pizza-container').hidden = true;
+      document.getElementById('pizza-vote-container').hidden = true;
+      document.getElementById('pizza-container').hidden = false;
       document.getElementById('log-vote-container').innerHTML = `<p>Want to vote? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
     } else if (vote != null) {
-      document.getElementById('pizza-container').hidden = true;
+      document.getElementById('pizza-vote-container').hidden = true;
+      document.getElementById('pizza-container').hidden = false;
       document.getElementById('log-vote-container').innerHTML = `<p>You have already voted. <a href=${userInfo["logout-url"]}>Logout</a></p>`;
     } else {
-      document.getElementById('pizza-container').hidden = false;
+      document.getElementById('pizza-vote-container').hidden = false;
+      document.getElementById('pizza-container').hidden = true;
       document.getElementById('log-vote-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
     }
   });

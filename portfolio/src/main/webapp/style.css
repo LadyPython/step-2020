@@ -198,7 +198,7 @@ div#chart-pizza-container {
   display: inline-block;
 }
 
-#pizza-container {
+#pizza-vote-container, #pizza-container {
   overflow: hidden;
   display: inline-block;
   position: relative;
@@ -218,37 +218,37 @@ div#chart-pizza-container {
 div.slice-container:nth-child(1) {
   transform:rotate(0deg) skewy(-30deg);
 }
-div.slice-container:nth-child(1) .slice:not(:hover) {
+div.slice-container:nth-child(1) .slice:not(:hover):not(:active) {
   background-color: white;
 }
 div.slice-container:nth-child(2) {
   transform:rotate(60deg) skewy(-30deg);
 }
-div.slice-container:nth-child(2) .slice:not(:hover) {
+div.slice-container:nth-child(2) .slice:not(:hover):not(:active) {
   background-color: #ffcccc;
 }
 div.slice-container:nth-child(3) {
   transform:rotate(120deg) skewy(-30deg);
 }
-div.slice-container:nth-child(3) .slice:not(:hover) {
+div.slice-container:nth-child(3) .slice:not(:hover):not(:active) {
   background-color: #ff9999;
 }
 div.slice-container:nth-child(4) {
   transform:rotate(180deg) skewy(-30deg);
 }
-div.slice-container:nth-child(4) .slice:not(:hover) {
+div.slice-container:nth-child(4) .slice:not(:hover):not(:active) {
   background-color: #ff6666;
 }
 div.slice-container:nth-child(5) {
   transform:rotate(240deg) skewy(-30deg);
 }
-div.slice-container:nth-child(5) .slice:not(:hover) {
+div.slice-container:nth-child(5) .slice:not(:hover):not(:active) {
   background-color: #ff3333;
 }
 div.slice-container:nth-child(6) {
   transform:rotate(300deg) skewy(-30deg);
 }
-div.slice-container:nth-child(6) .slice:not(:hover) {
+div.slice-container:nth-child(6) .slice:not(:hover):not(:active) {
   background-color: red;
 }
 
@@ -261,8 +261,10 @@ div.slice-container:nth-child(6) .slice:not(:hover) {
   border-radius: 50%;
   border: 1px solid white;
 }
-.slice:hover {background-color: #242424;}
-.slice:active {background-color: black;}
+#pizza-vote-container .slice:hover {background-color: #242424;}
+#pizza-vote-container .slice:active {background-color: black;}
+#pizza-container .slice:hover {background-color: black;}
+#pizza-container .slice:active {background-color: black;}
 
 [hidden] {
   display: none !important;
