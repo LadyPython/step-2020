@@ -32,39 +32,37 @@
       <p>Click <a href="charts.html">here</a> to see charts</p>
       <p>Vote for favourite slice of pizza</p>
       <div id="log-vote-container"></div>
-      <div id="pizza">
-        <ul class="pizza">
-          <li class="slice">
-            <form action="/pizza-data?slice=0" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-            </li>
-            <li class="slice">
-            <form action="/pizza-data?slice=1" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-            </li>
-            <li class="slice">
-            <form action="/pizza-data?slice=2" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-            </li>
-            <li class="slice">
-            <form action="/pizza-data?slice=3" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-            </li>
-            <li class="slice">
-            <form action="/pizza-data?slice=4" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-            </li>
-            <li class="slice">
-            <form action="/pizza-data?slice=5" method="POST">
-              <input class="slice-content" type="submit"/>
-            </form>
-          </li>
-        </ul>
+      <div id="pizza-container">
+        <div class="slice-container">
+          <form action="/pizza-data?slice=0" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=1" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slicer=2" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=3" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=4" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=5" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
       </div>
       <div id="chart-pizza-container"></div> 
     </div>

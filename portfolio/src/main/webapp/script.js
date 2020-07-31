@@ -144,15 +144,15 @@ function loadPizzaVote() {
   fetch('/user-info').then(response => response.json()).then((userInfo) => {
     var isLoggedIn = userInfo["is-logged-in"];
     var vote = userInfo["vote"];
-    console.log(vote);
+
     if (!isLoggedIn) {
-      document.getElementById('pizza').hidden = true;
+      document.getElementById('pizza-container').hidden = true;
       document.getElementById('log-vote-container').innerHTML = `<p>Want to vote? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
     } else if (vote != null) {
-      document.getElementById('pizza').hidden = true;
+      document.getElementById('pizza-container').hidden = true;
       document.getElementById('log-vote-container').innerHTML = `<p>You have already voted. <a href=${userInfo["logout-url"]}>Logout</a></p>`;
     } else {
-      document.getElementById('pizza').hidden = false;
+      document.getElementById('pizza-container').hidden = false;
       document.getElementById('log-vote-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
     }
   });

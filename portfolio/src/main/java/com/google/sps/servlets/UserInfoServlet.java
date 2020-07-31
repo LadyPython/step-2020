@@ -61,7 +61,6 @@ public class UserInfoServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     
     String destinationURL = request.getHeader("referer");
-    System.out.println(destinationURL);
     boolean isLoggedIn = userService.isUserLoggedIn();
     
     Map<String, Object> userInfo = new HashMap<String, Object>();
