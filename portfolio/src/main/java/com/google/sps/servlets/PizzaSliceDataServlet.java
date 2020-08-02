@@ -15,19 +15,19 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList; 
+import java.util.Arrays; 
+import java.util.List;
 import java.util.Scanner;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,16 +45,16 @@ public class PizzaSliceDataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    Map<Integer, Integer> pizzaVotes = new LinkedHashMap<>();
-    pizzaVotes.put(0, 0);
-    pizzaVotes.put(1, 0);
-    pizzaVotes.put(2, 0);
-    pizzaVotes.put(3, 0);
-    pizzaVotes.put(4, 0);
-    pizzaVotes.put(5, 0);
+    List<Integer> pizzaVotes = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0));
     for (Entity entity : results.asIterable()) {
-      Integer slice = (int) (long) entity.getProperty("slice");
-      pizzaVotes.put(slice, pizzaVotes.get(slice) + 1);
+      Integer slice = Integer.parseInt(entity.getProperty("slice").toString());
+      if (slice > 5 || slice < 0) {
+        System.err.println("Slice number is not in [0, 5]: " + slice);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().println("Slice number should be in [0, 5]");
+        return;
+      }
+      pizzaVotes.set(slice, pizzaVotes.get(slice) + 1);
     }
     Gson gson = new Gson();
     String json = gson.toJson(pizzaVotes);
@@ -70,8 +70,8 @@ public class PizzaSliceDataServlet extends HttpServlet {
       return;
     }
 
-    String id = userService.getCurrentUser().getUserId();
-    if (User.getVote(id) != null) {
+    String uid = userService.getCurrentUser().getUserId();
+    if (User.getVote(uid) != null) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       response.getWriter().println("You can't vote twice");
       return;
@@ -92,13 +92,13 @@ public class PizzaSliceDataServlet extends HttpServlet {
       response.getWriter().println("Slice number should be in [0, 5]");
       return;
     }
-    
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity entity = new Entity("Vote", id);
-    entity.setProperty("id", id);
+    Entity entity = new Entity("Vote", uid);
+    entity.setProperty("uid", uid);
     entity.setProperty("slice", slice);
     datastore.put(entity);
 
-    response.sendRedirect("/tmp.html");
+    response.sendRedirect("/tasks.html");
   }
 }

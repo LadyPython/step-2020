@@ -44,11 +44,11 @@ public class UserInfoServlet extends HttpServlet {
     }
     
     String nickname = request.getParameter("nickname");
-    String id = userService.getCurrentUser().getUserId();
+    String uid = userService.getCurrentUser().getUserId();
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity entity = new Entity("UserInfo", id);
-    entity.setProperty("id", id);
+    Entity entity = new Entity("UserInfo", uid);
+    entity.setProperty("uid", uid);
     entity.setProperty("nickname", nickname);
     datastore.put(entity);
 
@@ -61,15 +61,19 @@ public class UserInfoServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     
     String destinationURL = request.getHeader("referer");
+    if (destinationURL == null) {
+        destinationURL = "/index.html";
+    }
     boolean isLoggedIn = userService.isUserLoggedIn();
     
     Map<String, Object> userInfo = new HashMap<String, Object>();
     userInfo.put("is-logged-in", isLoggedIn);
     if (isLoggedIn) {
+      String uid = userService.getCurrentUser().getUserId();
       userInfo.put("logout-url", userService.createLogoutURL(destinationURL));
-      userInfo.put("uid", userService.getCurrentUser().getUserId());
-      userInfo.put("nickname", User.getUserNickname(userService.getCurrentUser().getUserId()));
-      userInfo.put("vote", User.getVote(userService.getCurrentUser().getUserId()));
+      userInfo.put("uid", uid);
+      userInfo.put("nickname", User.getUserNickname(uid));
+      userInfo.put("vote", User.getVote(uid));
     } else {
       userInfo.put("login-url", userService.createLoginURL(destinationURL));
     }
