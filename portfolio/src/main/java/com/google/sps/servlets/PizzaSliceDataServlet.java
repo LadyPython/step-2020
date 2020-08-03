@@ -50,9 +50,7 @@ public class PizzaSliceDataServlet extends HttpServlet {
       Integer slice = Integer.parseInt(entity.getProperty("slice").toString());
       if (slice > 5 || slice < 0) {
         System.err.println("Slice number is not in [0, 5]: " + slice);
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.getWriter().println("Slice number should be in [0, 5]");
-        return;
+        continue;
       }
       pizzaVotes.set(slice, pizzaVotes.get(slice) + 1);
     }

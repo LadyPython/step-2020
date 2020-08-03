@@ -69,14 +69,12 @@ public class VKDataServlet extends HttpServlet {
 
       switch (type) {
         case "countries":
-          if (!key.equals("Russia") && !key.equals("")) {
+          if (!key.equals("Russia")) {
             countries.put(key, countries.getOrDefault(key, 0) + value);
           }
           break;
         case "cities":
-          if (!key.equals("")) {
-            cities.put(key, cities.getOrDefault(key, 0) + value);
-          }
+          cities.put(key, cities.getOrDefault(key, 0) + value);
           break;
         case "gender": 
           genders.put(key, genders.getOrDefault(key, 0) + value);
@@ -89,7 +87,7 @@ public class VKDataServlet extends HttpServlet {
           views_for_year.put(key, views_for_year.getOrDefault(key, 0) + value);
           views.put(year, views_for_year);
           break;
-        default: 
+        default:
           break;
       }
     }
@@ -104,7 +102,8 @@ public class VKDataServlet extends HttpServlet {
     response.setContentType("application/json");
     Gson gson = new Gson();
     String json = "";
-    switch (request.getParameter("type")) {
+    String type = request.getParameter("type");
+    switch (type) {
       case "countries":
         json = gson.toJson(countries);
         break;
@@ -118,7 +117,9 @@ public class VKDataServlet extends HttpServlet {
         json = gson.toJson(views);
         break;
       default:
-        break;
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.getWriter().println("Type " + type + "is not supported");
+        return;
     }
     response.getWriter().println(json);
   }
