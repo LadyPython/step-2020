@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Tmp</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,700;0,900;1,100;1,200;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <script src="script.js"></script>
+  </head>
+  <body onload="loadPizzaVote()">
+    <header>
+      <nav>
+        <div>
+          <ul class="nav-links">
+            <li><a class="active"  href="tasks.html">Tasks</a></li>
+            <li><a href="chat.html">Chat</a></li>
+            <li><a href="contacts.html">Contact</a></li>
+            <li><a href="index.html">About</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <div class="content">
+      <p>Click here to get a random message:</p>
+      <div id="greeting-container"></div>
+      <button onclick="addRandomGreeting()">Hello</button>
+      <br>
+      <p>Click here to see how many times you clicked here:</p>
+      <div id="data-container"></div>
+      <button onclick="getData()">Fetch!</button>
+      <p>Click <a href="charts.html">here</a> to see charts</p>
+      <p>Vote for favourite slice of pizza</p>
+      <div id="log-vote-container"></div>
+      <div id="pizza-container">
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+        <div class="slice-container">
+          <div class="slice"></div>
+        </div>
+      </div>
+      <div id="pizza-vote-container">
+        <div class="slice-container">
+          <form action="/pizza-data?slice=0" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=1" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slicer=2" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=3" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=4" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+        <div class="slice-container">
+          <form action="/pizza-data?slice=5" method="POST">
+            <input class="slice" type="submit" value="">
+          </form>
+        </div>
+      </div>
+      <div id="chart-pizza-container"></div> 
+    </div>
+    <script>
+      google.charts.load("current", {
+        "packages":["corechart"],
+      });
+      google.charts.setOnLoadCallback(drawPizza);
+    </script>
+  </body>
+</html>

@@ -140,6 +140,27 @@ function loadMessageForm() {
   });
 }
 
+function loadPizzaVote() {
+  fetch('/user-info').then(response => response.json()).then((userInfo) => {
+    var isLoggedIn = userInfo["is-logged-in"];
+    var vote = userInfo["vote"];
+
+    if (!isLoggedIn) {
+      document.getElementById('pizza-vote-container').hidden = true;
+      document.getElementById('pizza-container').hidden = false;
+      document.getElementById('log-vote-container').innerHTML = `<p>Want to vote? Please, <a href=${userInfo["login-url"]}>login</a></p>`;
+    } else if (vote != null) {
+      document.getElementById('pizza-vote-container').hidden = true;
+      document.getElementById('pizza-container').hidden = false;
+      document.getElementById('log-vote-container').innerHTML = `<p>You have already voted. <a href=${userInfo["logout-url"]}>Logout</a></p>`;
+    } else {
+      document.getElementById('pizza-vote-container').hidden = false;
+      document.getElementById('pizza-container').hidden = true;
+      document.getElementById('log-vote-container').innerHTML = `<p>You can <a href=${userInfo["logout-url"]}>logout</a></p>`;
+    }
+  });
+}
+
 /**
  * Adds a number of fetches to the page.
  */
@@ -179,4 +200,142 @@ function addRandomGreeting() {
 function formatTimestamp(timestamp) {
   var date = new Date(timestamp);
   return date.toLocaleString();
+}
+
+function drawCharts() {
+  drawCountries();
+  drawCities();
+  drawGenders();
+  drawAges();
+}
+
+function drawCountries() {
+  fetch('/vk-data?type=countries').then(response => response.json()).then((views) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'country');
+    data.addColumn('number', 'views');
+
+    Object.keys(views).forEach((country) => {
+        data.addRow([country, views[country]]);
+    });
+
+    const options = {
+        colorAxis: {colors: ['#ffdddd', '#a31414']},
+        backgroundColor: '#101010',
+        datalessRegionColor: 'white',
+        defaultColor: 'white',
+    };
+    const chart = new google.visualization.GeoChart(document.getElementById('chart-container-countries'));
+    chart.draw(data, options);
+  });
+}
+
+function drawCities() {
+  fetch('/vk-data?type=cities').then(response => response.json()).then((views) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'city');
+    data.addColumn('number', 'views');
+
+    Object.keys(views).forEach((city) => {
+      data.addRow([city, views[city]]);
+    });
+
+    const options = {
+      region: 'RU',
+      displayMode: 'markers',
+      colorAxis: {colors: ['#ffdddd', '#a31414']},
+      backgroundColor: '#101010',
+    };
+    const chart = new google.visualization.GeoChart(document.getElementById('chart-container-cities'));
+    chart.draw(data, options);
+  });
+}
+
+function drawGenders() {
+  fetch('/vk-data?type=genders').then(response => response.json()).then((views) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'gender');
+    data.addColumn('number', 'views');
+
+    Object.keys(views).forEach((gender) => {
+      data.addRow([gender, views[gender]]);
+    });
+
+    options = {
+      backgroundColor: '#101010',
+      pieSliceBorderColor: 'black',
+      colors: ['#a31414', 'white'],
+      pieSliceText: 'label',
+      pieSliceTextStyle: {color: 'black'},
+      legend: 'none',
+      height: 500,
+    };
+    chart = new google.visualization.PieChart(document.getElementById('chart-container-genders'));
+    chart.draw(data, options);
+  });
+}
+
+function drawAges() {
+  fetch('/vk-data?type=ages').then(response => response.json()).then((views) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'date');
+
+    data.addColumn('number', '1-18');
+    data.addColumn('number', '18-21');
+    data.addColumn('number', '21-24');
+    data.addColumn('number', '24-27');
+    data.addColumn('number', '27-30');
+    data.addColumn('number', '30-35');
+    data.addColumn('number', '35-45');
+    data.addColumn('number', '45+');
+
+    Object.keys(views).forEach((date) => {
+      data.addRow([date, 
+                  views[date]['1-18'],
+                  views[date]['18-21'],
+                  views[date]['21-24'],
+                  views[date]['24-27'], 
+                  views[date]['27-30'],
+                  views[date]['30-35'],
+                  views[date]['35-45'],
+                  views[date]['45+']]);
+    });
+
+    const options = {
+      seriesType: 'bars',
+      colors: ['white', '#ffdddd', '#ffbbbb', '#ff9999', '#ff7777', '#ff5555', '#ff3333', 'red'],
+      legend: {textStyle: {color: 'white'}},
+      backgroundColor: '#101010',
+      vAxis: {viewWindow: {max: 6500}, textStyle: {color: 'white'}, baselineColor: '#666666', gridlines: {color: '#333333'}},
+      hAxis: {textStyle: {color: 'white'}},
+      height: 500
+    };
+    const chart = new google.visualization.ColumnChart(document.getElementById('chart-container-ages'));
+    
+    chart.draw(data, options);
+  });
+}
+
+function drawPizza() {
+  fetch('/pizza-data').then(response => response.json()).then((sliceVotes) => {
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'slice');
+    data.addColumn('number', 'votes');
+    Object.keys(sliceVotes).forEach((slice) => {
+      data.addRow([slice, sliceVotes[slice]]);
+    });
+
+    const options = {
+      colors: ['white', '#ffcccc', '#ff9999', '#ff6666', '#ff3333', 'red'],
+      backgroundColor: '#101010',
+      pieSliceTextStyle: {color: 'black'},
+      legend: 'none',
+      width: 520,
+      height: 520,
+      chartArea: {width: 500, height: 500}
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('chart-pizza-container'));
+    chart.draw(data, options);
+  });
 }

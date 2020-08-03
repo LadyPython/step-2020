@@ -20,14 +20,24 @@ public class User {
   /**
    * Returns the nickname of the user with id, or empty String if the user has not set a nickname.
    */
-  public static String getUserNickname(String id) {
+  public static String getUserNickname(String uid) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    Query query = new Query("UserInfo").setFilter(new Query.FilterPredicate("uid", Query.FilterOperator.EQUAL, uid));
     PreparedQuery results = datastore.prepare(query);
     Entity entity = results.asSingleEntity();
     if (entity == null) {
       return "";
     }
     return (String) entity.getProperty("nickname");
+  }
+  public static Integer getVote(String uid) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Vote").setFilter(new Query.FilterPredicate("uid", Query.FilterOperator.EQUAL, uid));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return null;
+    }
+    return Integer.parseInt(entity.getProperty("slice").toString());
   }
 }
