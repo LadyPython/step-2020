@@ -28,36 +28,54 @@ import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<TimeRange> eventTimeRanges = filterEventTimes(events, request.getAttendees());
-    return findTimes(eventTimeRanges, request.getDuration());
+    EventsTimeRange eventsTimeRange = filterEventsTime(events, request.getAttendees(), request.getOptionalAttendees());
+
+    Collection<TimeRange> times = findTimes(eventsTimeRange.getAllEventsTimeRange(), request.getDuration());
+    if (times.isEmpty()) {
+      System.out.println(eventsTimeRange.getMandatoryEventsTimeRange());
+      times = findTimes(eventsTimeRange.getMandatoryEventsTimeRange(), request.getDuration());
+    }
+    return times;
+  }
+  
+  private EventsTimeRange filterEventsTime(Collection<Event> events, Collection<String> attendees, Collection<String> optional_attendees) {
+    Collection<TimeRange> mandatoryEventsTimeRange = new HashSet<>();
+    Collection<TimeRange> optionalEventsTimeRange = new HashSet<>();
+
+    for (Event event : events) {
+      Collection<String> event_attendees = event.getAttendees();
+      if (!intersection(event_attendees, attendees).isEmpty()) {
+        mandatoryEventsTimeRange.add(event.getWhen());
+      }
+      if (!intersection(event_attendees, optional_attendees).isEmpty()) {
+        optionalEventsTimeRange.add(event.getWhen());
+      }
+    }
+    
+    return new EventsTimeRange(mandatoryEventsTimeRange, optionalEventsTimeRange);
   }
 
-  public Collection<TimeRange> filterEventTimes(Collection<Event> events, Collection<String> attendees) {
-    Predicate<Event> streamsPredicate = event -> !intersection(event.getAttendees(), attendees).isEmpty();
-    return events.stream().filter(streamsPredicate).map(event -> event.getWhen()).collect(Collectors.toList());
-  }
-
-  public Collection<String> intersection(Collection<String> c1, Collection<String> c2) {
+  private Collection<String> intersection(Collection<String> c1, Collection<String> c2) {
     Collection<String> intersection = new HashSet<String>(c1);
     intersection.retainAll(c2);
     return intersection;
   }
 
-  public Collection<TimeRange> findTimes(Collection<TimeRange> eventTimeRanges, long duration) {
+  private Collection<TimeRange> findTimes(Collection<TimeRange> eventsTimeRange, long duration) {
     if (duration > TimeRange.WHOLE_DAY.duration()) {
-      return Collections.emptyList();
+      return Arrays.asList();
     }
-
-    if (eventTimeRanges.isEmpty()) {
+    
+    if (eventsTimeRange.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
-
-    List<TimeRange> eventTimeRangesList = new ArrayList<>(eventTimeRanges);
-    Collections.sort(eventTimeRangesList, TimeRange.ORDER_BY_START);
+    
+    List<TimeRange> eventsTimeRangeList = new ArrayList<>(eventsTimeRange);
+    Collections.sort(eventsTimeRangeList, TimeRange.ORDER_BY_START);
 
     Collection<TimeRange> times = new ArrayList<>();
     int end = TimeRange.START_OF_DAY;
-    for (TimeRange eventTimeRange : eventTimeRangesList) {
+    for (TimeRange eventTimeRange : eventsTimeRangeList) {
       int start = eventTimeRange.start();
       if (end < start) {
         if (start - end >= duration) {
