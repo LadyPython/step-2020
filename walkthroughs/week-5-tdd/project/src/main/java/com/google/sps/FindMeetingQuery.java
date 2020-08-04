@@ -27,17 +27,20 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
-  public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+  public Collection<TimeRange> findTimeRangesForMeeting(Collection<Event> events, MeetingRequest request) {
     EventsTimeRange eventsTimeRange = filterEventsTime(events, request.getAttendees(), request.getOptionalAttendees());
 
     Collection<TimeRange> times = findTimes(eventsTimeRange.getAllEventsTimeRange(), request.getDuration());
     if (times.isEmpty()) {
-      System.out.println(eventsTimeRange.getMandatoryEventsTimeRange());
       times = findTimes(eventsTimeRange.getMandatoryEventsTimeRange(), request.getDuration());
     }
     return times;
   }
-  
+
+  /**
+   * Filter events which attand at list one of attendees. Collect event to mandatoryEventsTimeRange if mandatory attendee has this meeting event, 
+   * to optionalEventsTimeRange if optional attendee has this meetang. MandatoryEventsTimeRange for TimeRanges while attendees are busy, optionalEventsTimeRange for TimeRanges while optional attendees are busy.
+   */
   private EventsTimeRange filterEventsTime(Collection<Event> events, Collection<String> attendees, Collection<String> optional_attendees) {
     Collection<TimeRange> mandatoryEventsTimeRange = new HashSet<>();
     Collection<TimeRange> optionalEventsTimeRange = new HashSet<>();
@@ -61,6 +64,10 @@ public final class FindMeetingQuery {
     return intersection;
   }
 
+  /**
+   * If one or more time slots exists so that both mandatory and optional attendees can attend, return those time slots. 
+   * Otherwise, return the time slots that fit just the mandatory attendees.
+   */
   private Collection<TimeRange> findTimes(Collection<TimeRange> eventsTimeRange, long duration) {
     if (duration > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
@@ -74,19 +81,19 @@ public final class FindMeetingQuery {
     Collections.sort(eventsTimeRangeList, TimeRange.ORDER_BY_START);
 
     Collection<TimeRange> times = new ArrayList<>();
-    int end = TimeRange.START_OF_DAY;
+    int latestBusyTime = TimeRange.START_OF_DAY;
     for (TimeRange eventTimeRange : eventsTimeRangeList) {
-      int start = eventTimeRange.start();
-      if (end < start) {
-        if (start - end >= duration) {
-          times.add(TimeRange.fromStartEnd(end, start, false));
+      int startOfEvent = eventTimeRange.start();
+      if (latestBusyTime < startOfEvent) {
+        if (startOfEvent - latestBusyTime >= duration) {
+          times.add(TimeRange.fromStartEnd(latestBusyTime, startOfEvent));
         }
       }
-      end = Math.max(end, eventTimeRange.end());
+      latestBusyTime = Math.max(latestBusyTime, eventTimeRange.end());
     }
 
-    if (TimeRange.END_OF_DAY + 1 - end >= duration) {
-      times.add(TimeRange.fromStartEnd(end, TimeRange.END_OF_DAY, true));
+    if (TimeRange.END_OF_DAY - latestBusyTime >= duration) {
+      times.add(TimeRange.fromStartEnd(latestBusyTime, TimeRange.END_OF_DAY));
     }
 
     return times;

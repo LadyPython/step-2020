@@ -31,16 +31,16 @@ public final class TimeRangeTest {
         TimeRange.fromStartDuration(100, 50), TimeRange.fromStartDuration(100, 51));
 
     Assert.assertEquals(
-        TimeRange.fromStartDuration(100, 50), TimeRange.fromStartEnd(100, 150, false));
+        TimeRange.fromStartDuration(100, 50), TimeRange.fromStartEnd(100, 150));
 
     Assert.assertNotEquals(
-        TimeRange.fromStartDuration(100, 50), TimeRange.fromStartEnd(100, 150, true));
+        TimeRange.fromStartDuration(100, 50), TimeRange.fromStartEnd(100, 151));
 
     Assert.assertEquals(
-        TimeRange.fromStartDuration(100, 51), TimeRange.fromStartEnd(100, 150, true));
+        TimeRange.fromStartDuration(100, 51), TimeRange.fromStartEnd(100, 151));
 
     Assert.assertEquals(
-        TimeRange.fromStartEnd(100, 151, false), TimeRange.fromStartEnd(100, 150, true));
+        TimeRange.fromStartEnd(100, 151), TimeRange.fromStartEnd(100, 151));
   }
 
   @Test
@@ -153,8 +153,8 @@ public final class TimeRangeTest {
 
   @Test
   public void canContainEmptyRange() {
-    // Range from 100 (inclusive) to 200 (inclusive).
-    TimeRange range = TimeRange.fromStartEnd(100, 200, true);
+    // Range from 100 (inclusive) to 201 (not inclusive).
+    TimeRange range = TimeRange.fromStartEnd(100, 201);
 
     TimeRange emptyStart = TimeRange.fromStartDuration(100, 0);
     TimeRange emptyMiddle = TimeRange.fromStartDuration(150, 0);
@@ -167,8 +167,8 @@ public final class TimeRangeTest {
 
   @Test
   public void canOverlapEmptyRange() {
-    // Range from 100 (inclusive) to 200 (inclusive).
-    TimeRange range = TimeRange.fromStartEnd(100, 200, true);
+    // Range from 100 (inclusive) to 200 (not inclusive).
+    TimeRange range = TimeRange.fromStartEnd(100, 201);
 
     TimeRange emptyStart = TimeRange.fromStartDuration(100, 0);
     TimeRange emptyMiddle = TimeRange.fromStartDuration(150, 0);

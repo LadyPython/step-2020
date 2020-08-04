@@ -18,6 +18,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+/**
+ * EventsTimeRange is the container class for all TimaRanges when a specific group of people are meeting and are therefore
+ * busy. MandatoryEventsTimeRange for TimeRanges while attendees are busy, optionalEventsTimeRange for TimeRanges while optional attendees are busy.
+ */
 public final class EventsTimeRange {
   private final Collection<TimeRange> mandatoryEventsTimeRange = new HashSet<>();
   private final Collection<TimeRange> optionalEventsTimeRange = new HashSet<>();
