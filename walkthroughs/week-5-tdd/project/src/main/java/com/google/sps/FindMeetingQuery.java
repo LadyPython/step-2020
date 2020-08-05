@@ -69,7 +69,7 @@ public final class FindMeetingQuery {
    * Otherwise, return the time slots that fit just the mandatory attendees.
    */
   private Collection<TimeRange> findTimes(Collection<TimeRange> eventsTimeRange, long duration) {
-    if (duration > TimeRange.WHOLE_DAY.duration()) {
+    if (duration > TimeRange.WHOLE_DAY.duration() || duration < 0) {
       return Arrays.asList();
     }
     
@@ -79,21 +79,16 @@ public final class FindMeetingQuery {
     
     List<TimeRange> eventsTimeRangeList = new ArrayList<>(eventsTimeRange);
     Collections.sort(eventsTimeRangeList, TimeRange.ORDER_BY_START);
+    eventsTimeRangeList.add(TimeRange.fromStartDuration(TimeRange.END_OF_DAY, 0));
 
     Collection<TimeRange> times = new ArrayList<>();
-    int latestBusyTime = TimeRange.START_OF_DAY;
+    int end_last_event = TimeRange.START_OF_DAY;
     for (TimeRange eventTimeRange : eventsTimeRangeList) {
-      int startOfEvent = eventTimeRange.start();
-      if (latestBusyTime < startOfEvent) {
-        if (startOfEvent - latestBusyTime >= duration) {
-          times.add(TimeRange.fromStartEnd(latestBusyTime, startOfEvent));
-        }
+      int start_this_event = eventTimeRange.start();
+      if (start_this_event - end_last_event >= duration) {
+        times.add(TimeRange.fromStartEnd(end_last_event, start_this_event));
       }
-      latestBusyTime = Math.max(latestBusyTime, eventTimeRange.end());
-    }
-
-    if (TimeRange.END_OF_DAY - latestBusyTime >= duration) {
-      times.add(TimeRange.fromStartEnd(latestBusyTime, TimeRange.END_OF_DAY));
+      end_last_event = Math.max(end_last_event, eventTimeRange.end());
     }
 
     return times;
