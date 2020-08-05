@@ -68,27 +68,27 @@ public final class FindMeetingQuery {
    * If one or more time slots exists so that both mandatory and optional attendees can attend, return those time slots. 
    * Otherwise, return the time slots that fit just the mandatory attendees.
    */
-  private Collection<TimeRange> findTimes(Collection<TimeRange> eventsTimeRange, long duration) {
+  private Collection<TimeRange> findTimes(Collection<TimeRange> events_time_range, long duration) {
     if (duration > TimeRange.WHOLE_DAY.duration() || duration < 0) {
       return Arrays.asList();
     }
     
-    if (eventsTimeRange.isEmpty()) {
+    if (events_time_range.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
-    List<TimeRange> eventsTimeRangeList = new ArrayList<>(eventsTimeRange);
-    Collections.sort(eventsTimeRangeList, TimeRange.ORDER_BY_START);
-    eventsTimeRangeList.add(TimeRange.fromStartDuration(TimeRange.END_OF_DAY, 0));
+    List<TimeRange> events_time_range_list = new ArrayList<>(events_time_range);
+    Collections.sort(events_time_range_list, TimeRange.ORDER_BY_START);
+    events_time_range_list.add(TimeRange.fromStartDuration(TimeRange.END_OF_DAY, 0));
 
     Collection<TimeRange> times = new ArrayList<>();
     int end_last_event = TimeRange.START_OF_DAY;
-    for (TimeRange eventTimeRange : eventsTimeRangeList) {
-      int start_this_event = eventTimeRange.start();
+    for (TimeRange event_time_range : events_time_range_list) {
+      int start_this_event = event_time_range.start();
       if (start_this_event - end_last_event >= duration) {
         times.add(TimeRange.fromStartEnd(end_last_event, start_this_event));
       }
-      end_last_event = Math.max(end_last_event, eventTimeRange.end());
+      end_last_event = Math.max(end_last_event, event_time_range.end());
     }
 
     return times;

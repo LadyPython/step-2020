@@ -23,25 +23,25 @@ import java.util.HashSet;
  * busy. MandatoryEventsTimeRange for TimeRanges while attendees are busy, optionalEventsTimeRange for TimeRanges while optional attendees are busy.
  */
 public final class EventsTimeRange {
-  private final Collection<TimeRange> mandatoryEventsTimeRange = new HashSet<>();
-  private final Collection<TimeRange> optionalEventsTimeRange = new HashSet<>();
+  private final Collection<TimeRange> mandatory_events_time_range = new HashSet<>();
+  private final Collection<TimeRange> optional_events_time_range = new HashSet<>();
 
-  public EventsTimeRange(Collection<TimeRange> mandatoryEventsTimeRange, Collection<TimeRange> optionalEventsTimeRange) {
-    this.mandatoryEventsTimeRange.addAll(mandatoryEventsTimeRange);
-    this.optionalEventsTimeRange.addAll(optionalEventsTimeRange);
+  public EventsTimeRange(Collection<TimeRange> mandatory_events_time_range, Collection<TimeRange> optional_events_time_range) {
+    this.mandatory_events_time_range.addAll(mandatory_events_time_range);
+    this.optional_events_time_range.addAll(optional_events_time_range);
   }
 
   public Collection<TimeRange> getMandatoryEventsTimeRange() {
-    return Collections.unmodifiableCollection(mandatoryEventsTimeRange);
+    return Collections.unmodifiableCollection(mandatory_events_time_range);
   }
 
   public Collection<TimeRange> getOptionalEventsTimeRange() {
-    return Collections.unmodifiableCollection(optionalEventsTimeRange);
+    return Collections.unmodifiableCollection(optional_events_time_range);
   }
 
   public Collection<TimeRange> getAllEventsTimeRange() {
-    Collection<TimeRange> allEventsTimeRange = new HashSet<>(mandatoryEventsTimeRange);
-    allEventsTimeRange.addAll(optionalEventsTimeRange);
-    return Collections.unmodifiableCollection(allEventsTimeRange);
+    Collection<TimeRange> all_events_time_range = new HashSet<>(mandatory_events_time_range);
+    all_events_time_range.addAll(optional_events_time_range);
+    return Collections.unmodifiableCollection(all_events_time_range);
   }
 }
