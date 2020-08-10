@@ -22,7 +22,7 @@ import java.util.Comparator;
  */
 public final class TimeRange {
   public static final int START_OF_DAY = getTimeInMinutes(0, 0);
-  public static final int END_OF_DAY = getTimeInMinutes(23, 59);
+  public static final int END_OF_DAY = getTimeInMinutes(23, 59) + 1;
 
   public static final TimeRange WHOLE_DAY = new TimeRange(0, 24 * 60);
 
@@ -169,12 +169,10 @@ public final class TimeRange {
   }
 
   /**
-   * Creates a {@code TimeRange} from {@code start} to {@code end}. Whether or not {@code end} is
-   * included in the range will depend on {@code inclusive}. If {@code inclusive} is {@code true},
-   * then @{code end} will be in the range.
+   * Creates a {@code TimeRange} from {@code start} to {@code end} (is not included). 
    */
-  public static TimeRange fromStartEnd(int start, int end, boolean inclusive) {
-    return inclusive ? new TimeRange(start, end - start + 1) : new TimeRange(start, end - start);
+  public static TimeRange fromStartEnd(int start, int end) {
+    return new TimeRange(start, end - start);
   }
 
   /**

@@ -40,10 +40,16 @@ public final class MeetingRequest {
   private final long duration;
 
   public MeetingRequest(Collection<String> attendees, long duration) {
-    this.duration = duration;
     this.attendees.addAll(attendees);
+    this.duration = duration;
   }
 
+  public MeetingRequest(Collection<String> attendees, Collection<String> optional_attendees, long duration) {
+    this.attendees.addAll(attendees);
+    this.optional_attendees.addAll(optional_attendees);
+    this.duration = duration;
+  }
+  
   /**
    * Returns a read-only copy of the people who are required to attend this meeting.
    */

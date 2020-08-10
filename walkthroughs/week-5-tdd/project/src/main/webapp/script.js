@@ -31,7 +31,7 @@ function sendMeetingRequest() {
 
   // Create the request to send to the server using the data we collected from
   // the web form.
-  const meetingRequest = new MeetingRequest(duration, attendees, optionalAttendees);
+  const meetingRequest = new MeetingRequest(attendees, optionalAttendees, duration);
 
   queryServer(meetingRequest).then((timeRanges) => {
     updateResultsOnPage(timeRanges);
@@ -92,10 +92,10 @@ function timeToString(totalMinutes) {
  * Request for possible meeting times.
  */
 class MeetingRequest {
-  constructor(duration, attendees, optional_attendees) {
-    this.duration = duration;
+  constructor(attendees, optional_attendees, duration) {
     this.attendees = attendees;
     this.optional_attendees = optional_attendees;
+    this.duration = duration;
   }
 }
 
