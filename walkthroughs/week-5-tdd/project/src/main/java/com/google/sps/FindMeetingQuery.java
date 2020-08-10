@@ -28,34 +28,37 @@ import java.util.stream.Collectors;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> findTimeRangesForMeeting(Collection<Event> events, MeetingRequest request) {
-    EventsTimeRange eventsTimeRange = filterEventsTime(events, request.getAttendees(), request.getOptionalAttendees());
+    EventsTimeRange events_time_range = filterEventsTime(events, request.getAttendees(), request.getOptionalAttendees());
 
-    Collection<TimeRange> times = findTimes(eventsTimeRange.getAllEventsTimeRange(), request.getDuration());
+    Collection<TimeRange> times = findTimes(events_time_range.getAllEventsTimeRange(), request.getDuration());
     if (times.isEmpty()) {
-      times = findTimes(eventsTimeRange.getMandatoryEventsTimeRange(), request.getDuration());
+      times = findTimes(events_time_range.getMandatoryEventsTimeRange(), request.getDuration());
     }
     return times;
   }
 
   /**
-   * Filter events which attand at list one of attendees. Collect event to mandatoryEventsTimeRange if mandatory attendee has this meeting event, 
-   * to optionalEventsTimeRange if optional attendee has this meetang. MandatoryEventsTimeRange for TimeRanges while attendees are busy, optionalEventsTimeRange for TimeRanges while optional attendees are busy.
+   * Filter events which attend at list one of attendees. 
+   * Collect event to mandatory_events_time_range if mandatory attendee has this meeting event, 
+   * to optional_events_time_range if optional attendee has this meetang. 
+   * mandatory_events_time_range for TimeRanges while attendees are busy, 
+   * optional_events_time_range for TimeRanges while optional attendees are busy.
    */
   private EventsTimeRange filterEventsTime(Collection<Event> events, Collection<String> attendees, Collection<String> optional_attendees) {
-    Collection<TimeRange> mandatoryEventsTimeRange = new HashSet<>();
-    Collection<TimeRange> optionalEventsTimeRange = new HashSet<>();
+    Collection<TimeRange> mandatory_events_time_range = new HashSet<>();
+    Collection<TimeRange> optional_events_time_range = new HashSet<>();
 
     for (Event event : events) {
       Collection<String> event_attendees = event.getAttendees();
       if (!intersection(event_attendees, attendees).isEmpty()) {
-        mandatoryEventsTimeRange.add(event.getWhen());
+        mandatory_events_time_range.add(event.getWhen());
       }
       if (!intersection(event_attendees, optional_attendees).isEmpty()) {
-        optionalEventsTimeRange.add(event.getWhen());
+        optional_events_time_range.add(event.getWhen());
       }
     }
     
-    return new EventsTimeRange(mandatoryEventsTimeRange, optionalEventsTimeRange);
+    return new EventsTimeRange(mandatory_events_time_range, optional_events_time_range);
   }
 
   private Collection<String> intersection(Collection<String> c1, Collection<String> c2) {
